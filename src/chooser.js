@@ -1,0 +1,11 @@
+import '@fontsource-variable/plus-jakarta-sans';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/inter';
+import '@fontsource/bodoni-moda/500';
+import '@fontsource/bodoni-moda/400-italic';
+import '@fontsource/big-shoulders-display/800';
+import '@fontsource/dm-mono/400';
+import '@fontsource/poppins/400';
+import '@fontsource/poppins/600';
+import './chooser.css';

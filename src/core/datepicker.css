@@ -1,0 +1,42 @@
+/* ── Themed calendar (core/datepicker.js) — replaces the unstylable browser popup on desktop ── */
+@media (hover: hover) and (pointer: fine) {
+  .dp-input { background-repeat: no-repeat !important; background-position: right 12px center !important; background-size: 18px !important; padding-right: 40px !important; }
+  .dp-input::-webkit-calendar-picker-indicator { display: none; }
+}
+@media not ((hover: hover) and (pointer: fine)) { .dp-input { background-image: none !important; } }
+.dp, .dp[popover] {
+  position: fixed; inset: auto; margin: 0; z-index: 120; width: 312px; max-width: calc(100vw - 16px);
+  padding: 14px; border: 1px solid var(--dp-line, var(--line, #e3e3e3)); border-radius: var(--dp-radius, var(--radius-card, 12px));
+  background: var(--dp-bg, var(--surface, #fff)); color: var(--dp-ink, var(--ink, #1a1a1a));
+  box-shadow: var(--dp-shadow, 0 18px 48px rgba(0, 0, 0, .2)); font-family: var(--font-body, system-ui); font-size: 14px; overflow: visible;
+  animation: dpIn .16s var(--ease, ease) both;
+}
+.dp[hidden] { display: none; }
+@keyframes dpIn { from { opacity: 0; translate: 0 -4px; } }
+.dp__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.dp__title { margin: 0; font-family: var(--font-display, inherit); font-size: 17px; font-weight: var(--display-weight, 700); color: var(--dp-ink, var(--ink)); text-transform: none; letter-spacing: normal; }
+.dp__nav { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--dp-line, var(--line)); border-radius: var(--radius-btn, 8px); background: transparent; color: inherit; cursor: pointer; }
+.dp__nav:hover:not(:disabled) { background: var(--dp-hover, var(--tint)); }
+.dp__nav:disabled { opacity: .3; cursor: not-allowed; }
+.dp__wd { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
+.dp__wd span { text-align: center; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--dp-muted, var(--muted)); padding: 4px 0; }
+.dp__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px 0; }
+.dp__day { position: relative; height: 38px; border: 0; background: transparent; color: inherit; font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; border-radius: var(--dp-day-radius, min(var(--radius-input, 8px), 10px)); }
+.dp__day:hover:not(.is-disabled) { background: var(--dp-hover, var(--tint)); }
+.dp__day:focus-visible { outline: 2px solid var(--focus, var(--primary)); outline-offset: -2px; }
+.dp__day.is-out { color: var(--dp-muted, var(--muted)); opacity: .55; }
+.dp__day.is-today { font-weight: 800; }
+.dp__day.is-today::after { content: ""; position: absolute; left: 50%; bottom: 5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--primary); }
+.dp__day.is-range { background: color-mix(in srgb, var(--primary) 14%, transparent); border-radius: 0; }
+.dp__day.is-rs, .dp__day.is-re { background: color-mix(in srgb, var(--primary) 30%, transparent); }
+.dp__day.is-selected, .dp__day.is-selected:hover { background: var(--primary); color: var(--on-primary, #fff); font-weight: 700; }
+.dp__day.is-selected::after { background: var(--on-primary, #fff); }
+.dp__day.is-disabled { opacity: .28; cursor: not-allowed; }
+.dp__day.is-closed { text-decoration: none; background-image: repeating-linear-gradient(135deg, transparent 0 4px, color-mix(in srgb, var(--dp-muted, var(--muted)) 35%, transparent) 4px 5px); }
+.dp__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--dp-line, var(--line)); }
+.dp__link { min-height: 36px; padding: 0 10px; border: 0; background: transparent; color: var(--link, var(--primary)); font: inherit; font-weight: 700; cursor: pointer; border-radius: var(--radius-btn, 8px); }
+.dp__link:hover:not(:disabled) { background: var(--dp-hover, var(--tint)); }
+.dp__link:disabled { opacity: .35; cursor: not-allowed; }
+.dp__legend { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dp-muted, var(--muted)); }
+.dp__legend i { width: 14px; height: 14px; border-radius: 3px; background-image: repeating-linear-gradient(135deg, transparent 0 3px, var(--dp-muted, var(--muted)) 3px 4px); opacity: .6; }
+@media (prefers-reduced-motion: reduce) { .dp { animation: none; } }
