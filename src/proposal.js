@@ -9,7 +9,7 @@ import '@fontsource/dm-mono/400';
 import '@fontsource/poppins/400';
 import '@fontsource/poppins/600';
 import './proposal.css';
-import { proposal, proof, pricing as pricingDefaults, plan, designs } from './proposal.config.js';
+import { proposal, pricing as pricingDefaults, plan, designs } from './proposal.config.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -89,16 +89,6 @@ function renderDesigns() {
     </article>`).join('');
 }
 
-function renderProof() {
-  const { stats, testimonials } = proof;
-  if (!stats.length && !testimonials.length) return;
-  $('#stats').innerHTML = stats.map((s) => `<div><b>${esc(s.value)}</b><span>${esc(s.label)}</span></div>`).join('');
-  $('#quotes').innerHTML = testimonials.map((t) => `
-    <figure class="quote-card"><blockquote>“${esc(t.quote)}”</blockquote>
-      <figcaption><strong>${esc(t.name)}</strong>, ${esc(t.role)}${t.result ? `<br><span>${esc(t.result)}</span>` : ''}</figcaption></figure>`).join('');
-  $('#proof').hidden = false;
-}
-
 function renderPlan() {
   $('#days').innerHTML = plan.map((p) => `<li><b>${esc(p.day)}</b><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p></li>`).join('');
 }
@@ -133,6 +123,7 @@ function quoteRows({ offer }) {
 }
 
 function renderQuote() {
+  updateSel();
   const { rows, free, adds } = quoteRows({ offer: state.offer });
   const setup = state.offer ? price.setupOffer : price.setupList;
   const monthlyNow = price.hosting + (free ? 0 : addOnMonthly());
@@ -145,13 +136,14 @@ function renderQuote() {
 
   const canAccept = !!state.dir;
   $('#offerBox').innerHTML = state.offer
-    ? `<p class="offer"><b>One-time offer</b> <span>You save ${money(saving)} when you accept on this call.</span></p>
-       <button class="btn btn--block" type="button" id="accept" ${canAccept ? '' : 'disabled aria-describedby="needDir"'}>Accept proposal</button>
-       ${canAccept ? '' : '<p class="fine" id="needDir">Choose your design direction to accept.</p>'}
+    ? `<p class="offer"><b>${esc(pricingDefaults.offerLabel)}</b> <span>You save ${money(saving)} when you confirm this proposal.</span></p>
+       <button class="btn btn--block" type="button" id="accept" ${canAccept ? '' : 'disabled aria-describedby="needDir"'}>Request this package</button>
+       ${canAccept ? '' : '<p class="fine" id="needDir">Choose your design direction to continue.</p>'}
        <button class="link" type="button" id="offerOff">Back to standard price</button>`
-    : `<button class="btn btn--block" type="button" id="offerOn">Show the one-time offer</button>
-       <p class="fine">There's a special price available while we're on this call.</p>`;
-  $('#guarantee').textContent = pricingDefaults.guarantee;
+    : `<button class="btn btn--block" type="button" id="offerOn">See the ${esc(pricingDefaults.offerLabel.toLowerCase())}</button>
+       <p class="fine">There's a reduced price for our first clients.</p>`;
+  const ads = state.on.has('meta') || state.on.has('lsa');
+  $('#guarantee').textContent = `${pricingDefaults.guarantee}${ads ? ` ${pricingDefaults.adSpendNote}` : ''}`;
 }
 
 function renderChoice() {
@@ -166,35 +158,39 @@ function renderChoice() {
 
 function setDir(id) { state.dir = id; saveChoice(); renderChoice(); renderQuote(); }
 
-function summaryText() {
+function summaryText(extra = {}) {
   const { free, adds } = quoteRows({ offer: state.offer });
   const setup = state.offer ? price.setupOffer : price.setupList;
-  const lines = [
-    `${proposal.agency} — website proposal for ${client.name}`,
-    `Design direction: ${dirName() || '(not chosen)'}`,
-    `Setup, due at start: ${money(setup)}${state.offer ? ` (one-time offer, standard ${money(price.setupList)})` : ''}`,
+  return [
+    `Proposal request — ${client.name}`,
+    extra.name ? `From: ${extra.name} (${extra.reach})` : '',
+    `Design direction: ${dirName() || '(not chosen yet)'}`,
+    `Setup, due at start: ${money(setup)}${state.offer ? ` (${pricingDefaults.offerLabel.toLowerCase()}, standard ${money(price.setupList)})` : ''}`,
     `Hosting, security & support: ${money(price.hosting)}/mo`,
     ...adds.map((a) => `${a.name}: ${money(a.monthly)}/mo${free ? ` (free for ${price.freeMonths} month${price.freeMonths === 1 ? '' : 's'})` : ''}`),
-    `Guarantee: ${pricingDefaults.guarantee}`,
-  ];
-  return lines.join('\n');
+    extra.note ? `\nNote: ${extra.note}` : '',
+  ].filter(Boolean).join('\n');
 }
 
+const mailto = (extra) => `mailto:${proposal.contactEmail}?subject=${encodeURIComponent(`Website proposal — ${client.name}`)}&body=${encodeURIComponent(summaryText(extra))}`;
+
 function openAccept() {
-  const { rows } = quoteRows({ offer: true });
-  const setup = price.setupOffer;
-  rows.push(row('Due at start', money(setup), 'quote__total'));
+  const { rows } = quoteRows({ offer: state.offer });
+  rows.push(row('Due at start', money(state.offer ? price.setupOffer : price.setupList), 'quote__total'));
   $('#acceptRows').innerHTML = rows.join('');
-  const go = $('#acceptGo');
-  if (proposal.paymentUrl) { go.href = proposal.paymentUrl; go.hidden = false; $('#acceptNote').textContent = 'You will be taken to our secure payment page.'; }
-  else { go.hidden = true; $('#acceptNote').textContent = `Copy your selection and send it back, and ${proposal.agency} will send your secure payment link right away.`; }
+  $('#acceptNote').textContent = `This opens an email to ${proposal.contactEmail} with your selection filled in. Nothing is charged or signed.`;
+  $('#acceptMail').href = mailto();
   $('#acceptCopy').textContent = 'Copy my selection';
-  $('#acceptMail')?.remove();
-  if (proposal.contactEmail) {
-    const a = Object.assign(document.createElement('a'), { id: 'acceptMail', className: 'btn', textContent: 'Email my selection', href: `mailto:${proposal.contactEmail}?subject=${encodeURIComponent('Proposal accepted — ' + client.name)}&body=${encodeURIComponent(summaryText())}` });
-    $('.dlg__act').prepend(a);
-  }
   $('#acceptDlg').showModal();
+}
+
+function renderContact() {
+  document.querySelectorAll('#mailLink, #footMail').forEach((a) => { a.textContent = proposal.contactEmail; a.href = `mailto:${proposal.contactEmail}`; });
+  $('#faqAdSpend').textContent = `No. ${pricingDefaults.adSpendNote} We recommend a starting budget once we know your goals.`;
+  updateSel();
+}
+function updateSel() {
+  $('#cformSel').textContent = `Your selection: ${dirName() || 'no design chosen yet'} · ${money(state.offer ? price.setupOffer : price.setupList)} setup${state.on.size ? ` + ${state.on.size} add-on${state.on.size > 1 ? 's' : ''}` : ''}`;
 }
 
 /* ── Presenter editor (?presenter) ───────────────────────────── */
@@ -243,10 +239,19 @@ document.addEventListener('input', (e) => {
   $('#addons').querySelectorAll('.add').forEach((el, i) => { el.querySelector('.add__p').innerHTML = `${money(price.addOns[i].monthly)}<small>/mo</small>`; });
 });
 
+$('#cform').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = new FormData(e.currentTarget);
+  const extra = { name: String(f.get('name')).trim(), reach: String(f.get('reach')).trim(), note: String(f.get('note')).trim() };
+  const bad = !extra.name || !extra.reach;
+  $('#cformErr').hidden = !bad;
+  if (!bad) location.href = mailto(extra);
+});
+
 $('#acceptCopy').addEventListener('click', async (e) => {
   const btn = e.currentTarget;
   try { await navigator.clipboard.writeText(summaryText()); btn.textContent = 'Copied ✓'; }
-  catch { btn.textContent = 'Copy not available — select the text above'; }
+  catch { btn.textContent = 'Copy not available'; }
 });
 
 /* Nav: shadow on scroll + current section */
@@ -264,4 +269,4 @@ if ('IntersectionObserver' in window) {
   links.forEach((l) => { const s = $(l.getAttribute('href')); if (s) io.observe(s); });
 }
 
-renderAnchors(); renderDesigns(); renderProof(); renderPlan(); renderPicker(); renderEditor(); renderChoice(); renderQuote();
+renderAnchors(); renderDesigns(); renderPlan(); renderContact(); renderPicker(); renderEditor(); renderChoice(); renderQuote();

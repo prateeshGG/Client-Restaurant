@@ -2,42 +2,32 @@
  * ─────────────────────────────────────────────────────────────
  *  PROPOSAL CONFIG — everything the sales proposal page says.
  *  Edit this file (or use ?client=Name in the URL, and ?presenter
- *  on the call to edit prices live) — no HTML changes needed.
- *  Anything marked PLACEHOLDER must be replaced before sending.
+ *  to edit prices live) — no HTML changes needed.
  * ─────────────────────────────────────────────────────────────
  */
 
 export const proposal = {
-  agency: 'Your Agency', // PLACEHOLDER — your company name
-  presenter: 'Your Name', // PLACEHOLDER — who is presenting
+  agency: 'WDS',
+  presenter: 'Prateesh Gautam',
   client: { name: 'Scioto House', place: 'Columbus, Ohio', type: 'boutique hotel & restaurant' },
-  contactEmail: '', // PLACEHOLDER — where the "send my choice" email goes
-  paymentUrl: '', // PLACEHOLDER — Stripe / invoice payment link opened by "Accept". Empty = we send the link after.
-};
-
-/* Proof. Sections hide themselves when these are empty, so add only real, approved items. */
-export const proof = {
-  stats: [
-    // { value: '$100M+', label: 'in bookings generated for clients' },   // PLACEHOLDER — real numbers only
-  ],
-  testimonials: [
-    // { quote: '…', name: 'Name', role: 'Owner, Business', result: 'Result in one line' }, // PLACEHOLDER
-  ],
+  contactEmail: 'prateeshgautam87@gmail.com', // everything (requests, questions) goes here by email
 };
 
 export const pricing = {
   currency: 'USD',
-  setupList: 15000, // PLACEHOLDER — normal one-time setup fee
-  setupOffer: 10000, // PLACEHOLDER — one-time offer if accepted on the call
-  hosting: 297, // PLACEHOLDER — monthly hosting, security & support
-  freeMonths: 1, // months of the selected add-ons included free with the one-time offer
-  guarantee: "If you're unhappy for any reason, you don't pay.", // PLACEHOLDER — confirm the actual terms
+  setupList: 6000, // standard one-time price for the complete build
+  setupOffer: 4500, // early-client price
+  hosting: 149, // monthly hosting, security, backups & support
+  freeMonths: 1, // months of the selected add-ons included free with the early-client price
+  offerLabel: 'Early-client price',
+  guarantee: 'Nothing goes live until you have reviewed and approved it.',
+  adSpendNote: 'Ad budgets are paid by you directly to Meta and Google and are not included in the monthly price.',
   /* Add-ons: price-anchored in the Traffic section, then sweetened as "free" in the offer. */
   addOns: [
-    { id: 'meta', name: 'Facebook & Instagram ads', monthly: 2500, on: true, blurb: 'Targeted ads to travellers and locals, with bookings tracked back to the ad.' },
-    { id: 'seo', name: 'Local SEO', monthly: 1500, on: true, blurb: 'Google Business Profile, hotel & restaurant listings and the page plan above.' },
-    { id: 'lsa', name: 'Google local ads', monthly: 1000, on: false, blurb: 'Paid placement for "boutique hotel near me" and "dinner tonight" searches.' },
-    { id: 'chat', name: 'AI concierge chat + instant lead alert', monthly: 400, on: false, blurb: 'Answers guest questions 24/7 and calls you within seconds of a new enquiry.' },
+    { id: 'meta', name: 'Facebook & Instagram ads', monthly: 800, on: true, blurb: 'We set up, run and optimise ads to travellers and locals, with bookings tracked back to the ad.' },
+    { id: 'seo', name: 'Local SEO', monthly: 600, on: true, blurb: 'Google Business Profile, hotel & restaurant listings and the page plan above, built up month by month.' },
+    { id: 'lsa', name: 'Google local ads', monthly: 500, on: false, blurb: 'Paid placement for "boutique hotel near me" and "dinner tonight" searches.' },
+    { id: 'chat', name: 'AI concierge chat + instant lead alert', monthly: 150, on: false, blurb: 'Answers guest questions 24/7 and alerts you within seconds of a new enquiry.' },
   ],
 };
 
