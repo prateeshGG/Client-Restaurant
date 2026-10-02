@@ -16,7 +16,7 @@ Routes: `/` proposal page · `/familiar/` · `/fresh/` · `/atelier/` · `/noir/
 The home page is a one-page, call-ready sales proposal that presents the five designs: hero personalised to the client →
 Traffic + Trust + Conversion mechanism (SEO page plan, ad price-anchors, trust checklist, booking flows) → the five designs
 with live links and "Choose this look" → honest status (what's built vs. the full build) → 3-day launch plan → dynamic pricing with an early-client price → what we need → FAQ → contact by email.
-- **Edit the copy, prices, add-ons, designs, proof and plan** in `src/proposal.config.js` .
+- **Edit the copy, prices, add-ons, designs and launch plan** in `src/proposal.config.js`.
 - **Personalise per client:** `/?client=Rhino%20Roofing` swaps the client name everywhere.
 - **Edit prices live on a call:** open `/?presenter` — an "Edit pricing" panel appears (hidden for the client's link). Edits persist in that browser.
 - Design screenshots live in `public/proposal/` (re-capture them if a design changes).
