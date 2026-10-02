@@ -6,11 +6,22 @@ A complete, working website for a new boutique hotel with a restaurant in Columb
 ## Run it
 ```bash
 npm install
-npm run dev        # http://localhost:3000  → design chooser
+npm run dev        # http://localhost:3000  → sales proposal (lists all designs)
 npm run build      # production build in dist/
 npm run preview    # serve the production build on :3000
 ```
-Routes: `/` chooser · `/familiar/` · `/fresh/` · `/atelier/` · `/noir/` · `/terra/` · `/admin/` (Owner Dashboard) (each site uses `#/…` routes below).
+Routes: `/` proposal page · `/familiar/` · `/fresh/` · `/atelier/` · `/noir/` · `/terra/` · `/admin/` (Owner Dashboard) (each site uses `#/…` routes below).
+
+## Sales proposal page (`/`)
+The home page is a one-page, call-ready sales proposal that presents the five designs: hero personalised to the client →
+Traffic + Trust + Conversion mechanism (SEO page plan, ad price-anchors, trust checklist, booking flows) → the five designs
+with live links and "Choose this look" → proof → 3-day launch plan → dynamic pricing with a one-time offer → accept.
+- **Edit the copy, prices, add-ons, designs, proof and plan** in `src/proposal.config.js` (anything marked PLACEHOLDER must be replaced).
+- **Personalise per client:** `/?client=Rhino%20Roofing` swaps the client name everywhere.
+- **Edit prices live on a call:** open `/?presenter` — an "Edit pricing" panel appears (hidden for the client's link). Edits persist in that browser.
+- Proof (stats/testimonials) stays hidden until you add real entries in the config.
+- Design screenshots live in `public/proposal/` (re-capture them if a design changes).
+- The Accept button opens a summary and, if `paymentUrl` is set in the config, a link to your payment page. No card details are collected on this page.
 
 ## 1. What was designed
 Marketing + direct-booking site for a 20-room hotel and all-day restaurant ("the Kitchen") in a restored 1891 brick
